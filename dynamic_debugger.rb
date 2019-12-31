@@ -1,8 +1,20 @@
 require 'binding_of_caller'
 require 'yaml'
+require 'pry-byebug'
 
 class DynamicDebugger
   CONFIG_FILE_NAME = '.dynamic_debugger.config.yml'
+
+  module DefaultConfigLoader
+    def self.load
+      return @@config if defined(@@config)
+
+      config_file = "#{ENV['HOME']}/#{CONFIG_FILE_NAME}"
+      raise "Missing configuration in: #{config_file}." unless File.exist?(config_file)
+
+      @@config = YAML::load_file(config_file)
+    end
+  end
 
   class << self
     def debug(tag, &block)
@@ -26,21 +38,22 @@ class DynamicDebugger
       end
     end
 
+    def config_loader
+      @@config_loader ||= DefaultConfigLoader
+    end
+
+    def set_config_loader(config_loader_instance)
+      @@config_loader = config_loader_instance
+    end
+
     private
 
     def config
-      if defined?(@@config)
-        @@config
-      else
-        config_file = "#{ENV['HOME']}/#{CONFIG_FILE_NAME}"
-        raise "Missing configuration in: #{config_file}." unless File.exist?(config_file)
-
-        @@config = YAML::load_file(config_file)
-      end
+      config_loader.load
     end
 
     def config_for_tag(tag)
-      config['breakpoints'][tag.to_s] || nil
+      config.dig('breakpoints', tag.to_s)
     end
 
     def breakpoint?(tag)
@@ -62,7 +75,7 @@ class DynamicDebugger
 
     def return_override?(tag)
       return unless cfg = config_for_tag(tag)
-      cfg.key?('return') && cfg['return'].length > 0
+      cfg.key?('return') && cfg['return'].to_s.length > 0
     end
 
     def return_override(tag)
@@ -89,6 +102,7 @@ class DynamicDebugger
     end
 
     def try_numeric_cast(raw)
+      return raw unless raw.is_a?(String)
       begin
         return Integer(raw)
       rescue
