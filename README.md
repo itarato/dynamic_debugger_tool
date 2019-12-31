@@ -48,3 +48,8 @@ breakpoints:
 - Alter the enclosed (inside `{ ... }`) expression
 - Toggle
 - Unlimited number of breakpoints (tagged uniquely)
+
+
+## Configuration GUI
+
+[Reposiroty](https://github.com/itarato/dynamic_debugger_gui).
