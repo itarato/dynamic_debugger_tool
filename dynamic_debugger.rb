@@ -4,8 +4,8 @@ require 'yaml'
 class DynamicDebugger
   CONFIG_FILE_NAME = '.dynamic_debugger.config.yml'
 
-	class << self
-		def debug(tag, &block)
+  class << self
+    def debug(tag, &block)
       _binding = binding.of_caller(1)
 
       return block && yield unless breakpoint?(tag)
