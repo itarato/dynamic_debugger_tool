@@ -6,15 +6,21 @@ that works by a configuration independent by the inspected code.
 
 Example of a code inspection:
 
-```
+```ruby
 my_var = DynamicDebugger.debug(:bar) { bar()  }
-                                      ^    ^^^
-                                      A    BCD
+#                                     ^    ^^^
+#                                     A    BCD
+```
 
 - (A) Pre-call inspection
 - (B) Return value inspection
 - (C) Post-call inspection
 - (D) Return value alteration
+
+Or just simply (no enclosing expression):
+
+```ruby
+DynamicDebugger.debug(:foo)
 ```
 
 Example configuration:
