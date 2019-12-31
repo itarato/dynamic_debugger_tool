@@ -52,4 +52,4 @@ breakpoints:
 
 ## Configuration GUI
 
-[Reposiroty](https://github.com/itarato/dynamic_debugger_gui).
+[Repository](https://github.com/itarato/dynamic_debugger_gui).
